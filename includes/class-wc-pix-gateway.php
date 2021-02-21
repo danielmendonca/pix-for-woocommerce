@@ -4,7 +4,7 @@
  * Gateway class
  *
  * @package Pix_For_WooCommerce/Classes/Gateway
- * @version 1.2.1
+ * @version 1.3.0
  */
 
 if (!defined('ABSPATH')) {
@@ -22,11 +22,11 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	 */
 	public function __construct()
 	{
-		$this->domain             = 'woocommerce-pix';
-		$this->id                 = 'pix_gateway';
-		$this->icon               = apply_filters('woocommerce_gateway_icon', WC_PIX_PLUGIN_URL.'assets/icon-pix.png');
-		$this->has_fields         = false;
-		$this->method_title       = __('Pix', $this->domain);
+		$this->domain = 'woocommerce-pix';
+		$this->id = 'pix_gateway';
+		$this->icon = apply_filters('woocommerce_gateway_icon', WC_PIX_PLUGIN_URL . 'assets/icon-pix.png');
+		$this->has_fields = false;
+		$this->method_title = __('Pix', $this->domain);
 		$this->method_description = __('Receba pagamentos via PIX', $this->domain);
 
 		// Load the settings.
@@ -34,36 +34,37 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$this->init_settings();
 
 		// Define user set variables
-		$this->title            = $this->get_option('title');
-		$this->description      = $this->get_option('description');
-		$this->instructions     = $this->get_option('instructions');
-		$this->key     			= $this->get_option('key');
-		$this->merchant     	= $this->get_option('merchant');
-		$this->city     		= $this->get_option('city');
-		$this->key     			= $this->get_option('key');
-		$this->whatsapp     	= $this->get_option('whatsapp');
-		$this->telegram     	= $this->get_option('telegram');
-		$this->email     		= $this->get_option('email');
-
-		//Load script files
-		add_action( 'wp_enqueue_scripts', array( $this, 'wcpix_load_scripts'));
+		$this->title = $this->get_option('title');
+		$this->description = $this->get_option('description');
+		$this->instructions = $this->get_option('instructions');
+		$this->key = $this->get_option('key');
+		$this->merchant = $this->get_option('merchant');
+		$this->city = $this->get_option('city');
+		$this->key = $this->get_option('key');
+		$this->whatsapp = $this->get_option('whatsapp');
+		$this->telegram = $this->get_option('telegram');
+		$this->email = $this->get_option('email');
+		$this->send_on_hold_email = $this->get_option('send_on_hold_email');
 
 		// Actions
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
 		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
-
-		if (is_account_page()){
+		if ('yes' == $this->send_on_hold_email) {
+			add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 4);
+		}
+		if (is_account_page()) {
 			add_action('woocommerce_order_details_after_order_table', array($this, 'order_page'));
 		}
 	}
 
 	/**
-	 * Load the script files.
+	 * Get templates path.
+	 *
+	 * @return string
 	 */
-	public function wcpix_load_scripts(){
-
-		// load the main js scripts file
-		wp_enqueue_script( 'wcpix-main-js', plugins_url( '/js/main.js', __FILE__ ), array('jquery'));
+	public static function get_templates_path()
+	{
+		return plugin_dir_path(WC_PIX_PLUGIN_FILE) . 'templates/';
 	}
 
 	/**
@@ -152,20 +153,6 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Get log.
-	 *
-	 * @return string
-	 */
-	protected function get_log_view()
-	{
-		if (defined('WC_VERSION') && version_compare(WC_VERSION, '2.2', '>=')) {
-			return '<a href="' . esc_url(admin_url('admin.php?page=wc-status&tab=logs&log_file=' . esc_attr($this->id) . '-' . sanitize_file_name(wp_hash($this->id)) . '.log')) . '">' . __('System Status &gt; Logs', 'woocommerce-pix') . '</a>';
-		}
-
-		return '<code>woocommerce/logs/' . esc_attr($this->id) . '-' . sanitize_file_name(wp_hash($this->id)) . '.txt</code>';
-	}
-
-	/**
 	 * Initialise Gateway Settings Form Fields.
 	 */
 	public function init_form_fields()
@@ -182,7 +169,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 				'type'        => 'text',
 				'description' => __('Representa o título visível para o usuário comprador', 'woocommerce-pix'),
 				'desc_tip'    => true,
-				'default'     => __('Pix', 'woocommerce-pix'),
+				'default'     => __('Faça um Pix', 'woocommerce-pix'),
 			),
 			'description'          => array(
 				'title'       => __('Descrição', 'woocommerce-pix'),
@@ -246,6 +233,13 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 				'type'        => 'textarea',
 				'description' => __('Instruções na página de obrigado pela compra', 'woocommerce-pix'),
 				'default'     => 'Utilize o seu aplicativo favorito do Pix para ler o QR Code ou copiar o código abaixo e efetuar o pagamento.',
+			),
+			'send_on_hold_email' => array(
+				'title'       => __('Enviar o QR Code e o código Pix no e-mail para pagamento?', 'woocommerce-pix'),
+				'type'    => 'checkbox',
+				'label'   => __('Enviar o QR Code e o código Pix no e-mail para pagamento?', 'woocommerce-pix'),
+				'description' => __('A imagem de cada QR Code será salva no seu servidor para ser renderizada no e-mail.', 'woocommerce-pix'),
+				'default' => 'no',
 			),
 		);
 	}
@@ -321,8 +315,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	public function render_pix($order_id)
 	{
 		$order = wc_get_order($order_id);
-		if($order->payment_method != 'pix_gateway')
-		{
+		if ($order->payment_method != 'pix_gateway') {
 			return;
 		}
 
@@ -330,12 +323,12 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		if ($this->instructions) {
 			echo wpautop(wptexturize($this->instructions));
 		}
-		if (!empty($pix)) {
-			?>
+		if (!empty($pix)) { ?>
 			<div class="wcpix-container" style="text-align: center;margin: 20px 0">
 				<input type="hidden" value="<?php echo $pix['link']; ?>" id="copiar">
-				<img  style="cursor:pointer; display: initial;" class="wcpix-img-copy-code" onclick="copyCode()" src="<?php echo $pix['image']; ?>" alt="QR Code" />
-				<br><p class="wcpix-p" style="font-size: 14px;margin-bottom:0"><?php echo $pix['link']; ?></p>
+				<img style="cursor:pointer; display: initial;" class="wcpix-img-copy-code" onclick="copyCode()" src="<?php echo $pix['image']; ?>" alt="QR Code" />
+				<br>
+				<p class="wcpix-p" style="font-size: 14px;margin-bottom:0"><?php echo $pix['link']; ?></p>
 				<br><button class="button wcpix-button-copy-code" style="margin-bottom: 20px;" onclick="copyCode()"><?php echo __('Clique aqui para copiar o Código acima', 'woocommerce-pix'); ?> </button><br>
 				<div class="wcpix-response-output inactive" style="margin: 2em 0.5em 1em;padding: 0.2em 1em;border: 2px solid #46b450;display: none;" aria-hidden="true" style=""><?php echo __('O código foi copiado para a área de transferência.', 'woocommerce-pix'); ?></div>
 			</div>
@@ -348,30 +341,28 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 					document.execCommand("copy");
 					copyText.type = "hidden";
 
-					if (jQuery("div.wcpix-response-output")){
+					if (jQuery("div.wcpix-response-output")) {
 						jQuery("div.wcpix-response-output").show();
-					}else{
+					} else {
 						alert('O código foi copiado para a área de transferência.');
 					}
 
 					return false;
 				}
 			</script>
-			<?php
+<?php
 			if ($this->whatsapp || $this->telegram || $this->email) {
 				echo '<br>' . __('Você pode compartilhar conosco o comprovante via:', 'woocommerce-pix');
 				if ($this->whatsapp) {
-					echo ' <a style="margin-right: 15px;" target="_blank" href="https://wa.me/'.$this->whatsapp.'?text=Segue%20meu%20comprovante%20para%20o%20pedido%20'.$order_id.'"> WhatsApp </a>';
+					echo ' <a style="margin-right: 15px;" target="_blank" href="https://wa.me/' . $this->whatsapp . '?text=Segue%20meu%20comprovante%20para%20o%20pedido%20' . $order_id . '"> WhatsApp </a>';
 				}
 				if ($this->telegram) {
-					echo ' <a style="margin-right: 15px;" target="_blank" href="https://t.me/'.$this->telegram.'?text=Segue%20meu%20comprovante%20para%20o%20pedido%20'.$order_id.'">Telegram </a>';
+					echo ' <a style="margin-right: 15px;" target="_blank" href="https://t.me/' . $this->telegram . '?text=Segue%20meu%20comprovante%20para%20o%20pedido%20' . $order_id . '">Telegram </a>';
 				}
 				if ($this->email) {
-					echo ' <a style="margin-right: 15px;" target="_blank" href="mailto:'.$this->email.'?subject=Comprovante%20pedido%20'.$order_id.'&body=Segue%20meu%20comprovante%20anexo%20para%20o%20pedido%20'.$order_id.'">Email.</a>';
+					echo ' <a style="margin-right: 15px;" target="_blank" href="mailto:' . $this->email . '?subject=Comprovante%20pedido%20' . $order_id . '&body=Segue%20meu%20comprovante%20anexo%20para%20o%20pedido%20' . $order_id . '">Email.</a>';
 				}
 			}
-
-
 		}
 	}
 
@@ -405,13 +396,30 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$pix->cidade($this->city);
 		$pix->lojista($this->merchant);
 		$pix->moeda(986); // Real brasileiro (BRL) - Conforme ISO 4217: https://pt.wikipedia.org/wiki/ISO_4217
-		$pix->txId('ID-'.$order_id);
+		$pix->txId('ID-' . $order_id);
 		$link = $pix->toCode();
 		$image = $pix->toImage();
 		$pix = array(
 			'image' => $image,
 			'link' => $link,
+			'instructions' => $this->instructions,
 		);
 		return $pix;
+	}
+
+	/**
+	 * Add content to the WC emails.
+	 */
+	public function email_instructions($order, $sent_to_admin, $plain_text = false, $email)
+	{
+		if ($order->get_payment_method() === $this->id && get_class($email) === 'WC_Email_Customer_On_Hold_Order') {
+			$pix = $this->generate_pix($order->get_id());
+			wc_get_template(
+				'email-on-hold-pix.php',
+				$pix,
+				'',
+				$this->get_templates_path()
+			);
+		}
 	}
 }

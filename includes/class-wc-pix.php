@@ -27,15 +27,6 @@ class WC_Pix {
 	}
 
 	/**
-	 * Get templates path.
-	 *
-	 * @return string
-	 */
-	public static function get_templates_path() {
-		return plugin_dir_path( WC_PIX_PLUGIN_FILE ) . 'templates/';
-	}
-
-	/**
 	 * Action links.
 	 *
 	 * @param array $links Action links.
@@ -57,6 +48,7 @@ class WC_Pix {
 		include_once dirname( __FILE__ ) . '/class-qrcode.php';
 		include_once dirname( __FILE__ ) . '/services/class-emv.php';
 		include_once dirname( __FILE__ ) . '/services/class-crc16.php';
+		include_once dirname( __FILE__ ) . '/helpers/jetpack.php';
 	}
 
 	/**

@@ -1,10 +1,10 @@
-=== Pix for WooCommerce ===
+=== Pix para WooCommerce ===
 Contributors: incuca, samoaste, dejean-echeverrya, rafengineer, paulodanieldiasdilva, dionmaicon
 Tags: woocommerce, payment gateway, gateway, pix
 Requires WooCommerce at least: 2.1
-Tested up to: 5.6
+Tested up to: 5.6.1
 Requires PHP: 7.1
-Stable Tag: 1.2.1
+Stable Tag: 1.3.0
 License: GPLv3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -68,24 +68,28 @@ You can contribute with the code on [GitHub](https://github.com/InCuca/woocommer
 
 = 2020.12.14 - version 1.0.0 =
 
-* Initial Release
+* Lançamento inicial
 
 = 2021.01.21 - version 1.1.0 =
 
-* Add Telegram and E-mail as sharing methods
+* Adicionado Telegram e E-mail como método de compartilhar o comprovante
 
 = 2021.01.21 - version 1.1.1 =
 
-* Add required fields for compatibility with more banks
+* Adiciona campos obrigatórios para aumentar a compatibilidade com mais bancos
 
 = 2021.01.21 - version 1.1.2 =
 
-* Remove stylesheet loading
+* Remove o carregamento da folha de estilos para maior performance
 
 = 2021.01.27 - version 1.2.0 =
 
-* New QR Code generator to lower PHP requirements
+* Novo gerador de QR Code para aumentar compatibilidade
 
 = 2021.01.28 - version 1.2.1 =
 
-* Icon and order id on share
+* Ícone e ID do pedido no compartilhamento
+
+= 2021.02.21 - version 1.3.0 =
+
+* Opção de enviar o Pix por e-mail para pagamento
