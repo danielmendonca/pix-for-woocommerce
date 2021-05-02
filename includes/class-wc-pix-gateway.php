@@ -4,7 +4,7 @@
  * Gateway class
  *
  * @package Pix_For_WooCommerce/Classes/Gateway
- * @version 1.3.0
+ * @version 1.3.1
  */
 
 if (!defined('ABSPATH')) {
@@ -192,7 +192,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 			'merchant'                => array(
 				'title'       => __('Nome do titular (obrigatório)', 'woocommerce-pix'),
 				'type'        => 'text',
-				'description' => __('Por favor, informe o nome do titular da conta bancária da chave PIX cadastrada.', 'woocommerce-pix'),
+				'description' => __('Por favor, informe o nome do titular da conta bancária da chave PIX cadastrada.<br>Máximo de 25 caracteres.<br>Não abreviar o nome, apenas descartar os caracteres que excederem esse limite.<br>Retirar acentuação para melhor compatibilidade entre bancos: utilize apenas <code>A-Z</code>, <code>a-z</code> e <code>espaço</code>.', 'woocommerce-pix'),
 				'default'     => '',
 				'required'	  => true,
 				'custom_attributes' => [
@@ -202,11 +202,11 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 			'city'                => array(
 				'title'       => __('Cidade do titular (obrigatório)', 'woocommerce-pix'),
 				'type'        => 'text',
-				'description' => __('Por favor, informe a cidade do titular da conta bancária da chave PIX cadastrada.', 'woocommerce-pix'),
+				'description' => __('Por favor, informe a cidade do titular da conta bancária da chave PIX cadastrada.<br>Máximo de 15 caracteres.<br>Não abreviar a cidade, apenas descartar os caracteres que excederem esse limite.<br>Retirar acentuação para melhor compatibilidade entre bancos: utilize apenas <code>A-Z</code>, <code>a-z</code> e <code>espaço</code>', 'woocommerce-pix'),
 				'default'     => '',
 				'required'	  => true,
 				'custom_attributes' => [
-					'maxlength' => 25
+					'maxlength' => 15
 				]
 			),
 			'whatsapp'                => array(
@@ -315,7 +315,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	public function render_pix($order_id)
 	{
 		$order = wc_get_order($order_id);
-		if ($order->payment_method != 'pix_gateway') {
+		if ($order->get_payment_method() != 'pix_gateway') {
 			return;
 		}
 
@@ -392,11 +392,11 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$order = wc_get_order($order_id);
 		$pix = new ICPFW_QRCode();
 		$pix->chave($this->key);
-		$pix->valor($order->total);
+		$pix->valor($order->get_total());
 		$pix->cidade($this->city);
 		$pix->lojista($this->merchant);
 		$pix->moeda(986); // Real brasileiro (BRL) - Conforme ISO 4217: https://pt.wikipedia.org/wiki/ISO_4217
-		$pix->txId('ID-' . $order_id);
+		$pix->txId('ID' . $order_id);
 		$link = $pix->toCode();
 		$image = $pix->toImage();
 		$pix = array(
@@ -410,7 +410,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	/**
 	 * Add content to the WC emails.
 	 */
-	public function email_instructions($order, $sent_to_admin, $plain_text = false, $email)
+	public function email_instructions($order, $sent_to_admin, $plain_text, $email)
 	{
 		if ($order->get_payment_method() === $this->id && get_class($email) === 'WC_Email_Customer_On_Hold_Order') {
 			$pix = $this->generate_pix($order->get_id());

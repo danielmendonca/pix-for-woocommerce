@@ -2,9 +2,9 @@
 Contributors: incuca, samoaste, dejean-echeverrya, rafengineer, paulodanieldiasdilva, dionmaicon
 Tags: woocommerce, payment gateway, gateway, pix
 Requires WooCommerce at least: 2.1
-Tested up to: 5.6.1
+Tested up to: 5.7.1
 Requires PHP: 7.1
-Stable Tag: 1.3.0
+Stable Tag: 1.3.1
 License: GPLv3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,3 +93,7 @@ You can contribute with the code on [GitHub](https://github.com/InCuca/woocommer
 = 2021.02.21 - version 1.3.0 =
 
 * Opção de enviar o Pix por e-mail para pagamento
+
+= 2021.02.21 - version 1.3.1 =
+
+* Correções de Warnings do PHP e compatibilidade com PHP 8

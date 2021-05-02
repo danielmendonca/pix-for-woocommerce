@@ -5,7 +5,7 @@
  *
  * @package Pix_For_WooCommerce/Classes/Gateway
  */
-class ICPFW_EMV
+class WP_ICPFW_EMV
 {
     /**
      * @var array(string => mixed) DataRecord Fields (Key/Value)
@@ -22,7 +22,7 @@ class ICPFW_EMV
      *
      * @param string $key
      * @param mixed $value
-     * @return ICPFW_EMV
+     * @return WP_ICPFW_EMV
      */
     public function set($key, $value)
     {
@@ -72,9 +72,9 @@ class ICPFW_EMV
         }
         if (isset($this->fields[ICPFW_CRC16])) {
             $stream = mb_substr($stream, 0, -4);
-            $crcCalculator = new ICPFW_CRC16();
-            $ICPFW_CRC16 = $crcCalculator->calculate($stream);
-            $stream .= $ICPFW_CRC16;
+            $crcCalculator = new WP_ICPFW_CRC16();
+            $WP_ICPFW_CRC16 = $crcCalculator->calculate($stream);
+            $stream .= $WP_ICPFW_CRC16;
         }
         return $stream;
     }

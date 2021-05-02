@@ -5,14 +5,14 @@
  *
  * @package Pix_For_WooCommerce/Classes/Gateway
  */
-class ICPFW_CRC16
+class WP_ICPFW_CRC16
 {
     /**
      * Returns the ASCII value of the nth char in the given string
      *
      * @param string $texto The string
      * @param integer $ordem Char position
-     * @return interger
+     * @return integer
      */
     public function byte($texto, $ordem)
     {

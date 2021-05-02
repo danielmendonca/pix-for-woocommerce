@@ -7,7 +7,7 @@
  * @see https://www.bcb.gov.br/content/estabilidadefinanceira/forumpireunioes/AnexoI-PadroesParaIniciacaodoPix.pdf
  *
  * @package Pix_For_WooCommerce
- * @version 1.2.0
+ * @version 1.3.1
  */
 
 if (!defined('ABSPATH')) {
@@ -39,14 +39,14 @@ class ICPFW_QRCode
      */
     public function __construct()
     {
-        $ICPFW_MERCHANT_ACCOUNT_INFORMATION = new ICPFW_EMV();
+        $ICPFW_MERCHANT_ACCOUNT_INFORMATION = new WP_ICPFW_EMV();
         $ICPFW_MERCHANT_ACCOUNT_INFORMATION->set(ICPFW_GUI, 'br.gov.bcb.pix');
         $ICPFW_MERCHANT_ACCOUNT_INFORMATION->set(ICPFW_CHAVE, '');
 
-        $ICPFW_ADDITIONAL_DATA_FIELD_TEMPLATE = new ICPFW_EMV();
+        $ICPFW_ADDITIONAL_DATA_FIELD_TEMPLATE = new WP_ICPFW_EMV();
         $ICPFW_ADDITIONAL_DATA_FIELD_TEMPLATE->set(ICPFW_TXID, '***');
 
-        $this->emv = new ICPFW_EMV();
+        $this->emv = new WP_ICPFW_EMV();
         $this->emv->set(ICPFW_PAYLOAD_FORMAT_INDICATOR, '01');
         $this->emv->set(ICPFW_POINT_OF_INITIATION_METHOD, '12');
         $this->emv->set(ICPFW_MERCHANT_ACCOUNT_INFORMATION, $ICPFW_MERCHANT_ACCOUNT_INFORMATION);
@@ -225,7 +225,7 @@ class ICPFW_QRCode
     {
         include dirname(__FILE__) . '/../vendor/php-qrcode/qrcode.php';
 
-        $generator = new ICPFW_Generate_QRCode($this->toString(), $options);
+        $generator = new ICPFW_Generate_QRCode($this->toString(), ['s'=>null]);
 
         /* Create bitmap image. */
         $image = $generator->render_image();
