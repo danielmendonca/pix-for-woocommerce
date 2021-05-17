@@ -11,7 +11,7 @@ Tested up to: 5.7.1
 
 Requires PHP: 7.1
 
-Stable Tag: 1.3.1
+Stable Tag: 1.3.2
 
 License: GPLv3.0
 
@@ -103,6 +103,10 @@ You can contribute with the code on [GitHub](https://github.com/InCuca/woocommer
 
 * Opção de enviar o Pix por e-mail para pagamento
 
-= 2021.02.21 - version 1.3.1 =
+= 2021.05.03 - version 1.3.1 =
 
 * Correções de Warnings do PHP e compatibilidade com PHP 8
+
+= 2021.05.17 - version 1.3.2 =
+
+* Alteração do filtro do Jetpack depreciado
