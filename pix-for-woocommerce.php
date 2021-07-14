@@ -6,8 +6,8 @@
  * Description: Aceite pagamentos com Pix.
  * Author: InCuca Tech
  * Author URI: https://incuca.net
- * Version: 1.3.2
- * Tested up to: 5.5.6
+ * Version: 1.3.4
+ * Tested up to: 5.7.2
  * License: GNU General Public License v3.0
  *
  * @package Pix_For_WooCommerce
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') or exit;
 
-define('WC_PIX_VERSION', '1.3.2');
+define('WC_PIX_VERSION', '1.3.4');
 define('WC_PIX_PLUGIN_FILE', __FILE__);
 define('WC_PIX_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_PIX_PLUGIN_PATH', plugin_dir_path(__FILE__));

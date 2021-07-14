@@ -4,7 +4,7 @@
  * HTML email instructions.
  *
  * @package Pix_For_WooCommerce
- * @version 1.3.0
+ * @version 1.3.4
  */
 
 if (!defined('ABSPATH')) {
@@ -31,16 +31,16 @@ if (isset($image) && !empty($image)) {
 ?>
 <p>
 	Caso tenha perdido o link para pagamento, ou fechado antes da conclusão, você pode encontrá-lo na sua conta,
-	<a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>" title="Minha conta">clicando aqui</a>.
+	<a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" title="Minha conta">clicando aqui</a>.
 	<?php echo wptexturize($instructions); ?>
 </p>
 
 <div style="margin: 36px auto;">
 	<?php if ($uploaded) : ?>
 		<h3 style="font-size: 18px;">Pague com o QR Code abaixo</h3>
-		<img style="display: table; background-color: #FFF" src="<?php echo $uploadUrl . $imageName; ?>" alt="QR Code" />
+		<img style="display: table; background-color: #FFF" src="<?php echo esc_url($uploadUrl . $imageName); ?>" alt="QR Code" />
 		<br>
 	<?php endif; ?>
 	<h3 style="font-size: 18px;">Pague copiando e colando o código Pix abaixo</h3>
-	<p class="wcpix-p" style="font-size: 14px;margin-bottom:0"><?php echo $link; ?></p>
+	<p class="wcpix-p" style="font-size: 14px;margin-bottom:0"><?php echo wp_kses_post($link); ?></p>
 </div>
