@@ -4,7 +4,7 @@
  * Gateway class
  *
  * @package Pix_For_WooCommerce/Classes/Gateway
- * @version 1.3.4
+ * @version 1.3.5
  */
 
 if (!defined('ABSPATH')) {
@@ -320,17 +320,35 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		}
 
 		$pix = $this->generate_pix($order_id);
-		if ($this->instructions) {
-			echo wpautop(wptexturize($this->instructions));
-		}
 		if (!empty($pix)) { ?>
 			<div class="wcpix-container" style="text-align: center;margin: 20px 0">
+				<div class="wcpix-instructions">
+					<?php
+					if ($this->instructions) {
+						echo wpautop(wptexturize($this->instructions));
+					}
+					?>
+				</div>
 				<input type="hidden" value="<?php echo wp_kses_post($pix['link']); ?>" id="copiar">
 				<img style="cursor:pointer; display: initial;" class="wcpix-img-copy-code" onclick="copyCode()" src="<?php echo wp_kses_post($pix['image']); ?>" alt="QR Code" />
 				<br>
 				<p class="wcpix-p" style="font-size: 14px;margin-bottom:0"><?php echo wp_kses_post($pix['link']); ?></p>
 				<br><button class="button wcpix-button-copy-code" style="margin-bottom: 20px;" onclick="copyCode()"><?php echo wp_kses_post(__('Clique aqui para copiar o Código acima', 'woocommerce-pix')); ?> </button><br>
 				<div class="wcpix-response-output inactive" style="margin: 2em 0.5em 1em;padding: 0.2em 1em;border: 2px solid #46b450;display: none;" aria-hidden="true" style=""><?php echo wp_kses_post(__('O código foi copiado para a área de transferência.', 'woocommerce-pix')); ?></div>
+				<?php
+				if ($this->whatsapp || $this->telegram || $this->email) {
+					echo wp_kses_post('<br>' . __('<span class="wcpix-explain">Você pode compartilhar conosco o comprovante via:</span>', 'woocommerce-pix'));
+					if ($this->whatsapp) {
+						echo wp_kses_post(' <a class="wcpix-whatsapp" style="margin-right: 15px;" target="_blank" href="https://wa.me/' . $this->whatsapp . '?text=Segue%20meu%20comprovante%20para%20o%20pedido%20' . $order_id . '"> WhatsApp </a>');
+					}
+					if ($this->telegram) {
+						echo wp_kses_post(' <a class="wcpix-telegram" style="margin-right: 15px;" target="_blank" href="https://t.me/' . $this->telegram . '?text=Segue%20meu%20comprovante%20para%20o%20pedido%20' . $order_id . '">Telegram </a>');
+					}
+					if ($this->email) {
+						echo wp_kses_post(' <a class="wcpix-email" style="margin-right: 15px;" target="_blank" href="mailto:' . $this->email . '?subject=Comprovante%20pedido%20' . $order_id . '&body=Segue%20meu%20comprovante%20anexo%20para%20o%20pedido%20' . $order_id . '">Email.</a>');
+					}
+				}
+				?>
 			</div>
 			<script>
 				function copyCode() {
@@ -351,18 +369,6 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 				}
 			</script>
 <?php
-			if ($this->whatsapp || $this->telegram || $this->email) {
-				echo wp_kses_post('<br>' . __('Você pode compartilhar conosco o comprovante via:', 'woocommerce-pix'));
-				if ($this->whatsapp) {
-					echo wp_kses_post(' <a style="margin-right: 15px;" target="_blank" href="https://wa.me/' . $this->whatsapp . '?text=Segue%20meu%20comprovante%20para%20o%20pedido%20' . $order_id . '"> WhatsApp </a>');
-				}
-				if ($this->telegram) {
-					echo wp_kses_post(' <a style="margin-right: 15px;" target="_blank" href="https://t.me/' . $this->telegram . '?text=Segue%20meu%20comprovante%20para%20o%20pedido%20' . $order_id . '">Telegram </a>');
-				}
-				if ($this->email) {
-					echo wp_kses_post(' <a style="margin-right: 15px;" target="_blank" href="mailto:' . $this->email . '?subject=Comprovante%20pedido%20' . $order_id . '&body=Segue%20meu%20comprovante%20anexo%20para%20o%20pedido%20' . $order_id . '">Email.</a>');
-				}
-			}
 		}
 	}
 
@@ -394,6 +400,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$pix->chave($this->key);
 		$pix->valor($order->get_total());
 		$pix->cidade($this->city);
+		// $pix->info('ID '.$order_id);
 		$pix->lojista($this->merchant);
 		$pix->moeda(986); // Real brasileiro (BRL) - Conforme ISO 4217: https://pt.wikipedia.org/wiki/ISO_4217
 		$pix->txId('ID' . $order_id);
