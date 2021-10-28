@@ -4,7 +4,7 @@
  * Gateway class
  *
  * @package Pix_For_WooCommerce/Classes/Gateway
- * @version 1.3.5
+ * @version 1.3.6
  */
 
 if (!defined('ABSPATH')) {
@@ -332,8 +332,8 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 				<input type="hidden" value="<?php echo wp_kses_post($pix['link']); ?>" id="copiar">
 				<img style="cursor:pointer; display: initial;" class="wcpix-img-copy-code" onclick="copyCode()" src="<?php echo wp_kses_post($pix['image']); ?>" alt="QR Code" />
 				<br>
-				<p class="wcpix-p" style="font-size: 14px;margin-bottom:0"><?php echo wp_kses_post($pix['link']); ?></p>
-				<br><button class="button wcpix-button-copy-code" style="margin-bottom: 20px;" onclick="copyCode()"><?php echo wp_kses_post(__('Clique aqui para copiar o Código acima', 'woocommerce-pix')); ?> </button><br>
+				<p class="wcpix-p" style="font-size: 14px;margin-bottom:0;word-break: break-all;"><?php echo wp_kses_post($pix['link']); ?></p>
+				<br><button class="button wcpix-button-copy-code" style="margin-bottom: 20px;margin-left: auto;margin-right: auto;" onclick="copyCode()"><?php echo wp_kses_post(__('Clique aqui para copiar o Código acima', 'woocommerce-pix')); ?> </button><br>
 				<div class="wcpix-response-output inactive" style="margin: 2em 0.5em 1em;padding: 0.2em 1em;border: 2px solid #46b450;display: none;" aria-hidden="true" style=""><?php echo wp_kses_post(__('O código foi copiado para a área de transferência.', 'woocommerce-pix')); ?></div>
 				<?php
 				if ($this->whatsapp || $this->telegram || $this->email) {

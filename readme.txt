@@ -4,7 +4,7 @@ Tags: woocommerce, payment gateway, gateway, pix
 Requires WooCommerce at least: 2.1
 Tested up to: 5.8.1
 Requires PHP: 7.1
-Stable Tag: 1.3.5
+Stable Tag: 1.3.6
 License: GPLv3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -109,3 +109,7 @@ You can contribute with the code on [GitHub](https://github.com/InCuca/woocommer
 = 2021.09.21 - version 1.3.5 =
 
 * Adição de classes para estilizar a tela de finalização de compra
+
+= 2021.10.28 - version 1.3.6 =
+
+* Pequena correção de layout para mobile
