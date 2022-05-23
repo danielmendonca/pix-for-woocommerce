@@ -47,6 +47,6 @@ class WP_ICPFW_CRC16
                 }
             }
         }
-        return strtoupper( dechex( $response ) );
+        return strtoupper( str_pad( dechex( $response ), 4, '0', STR_PAD_LEFT) );
     }
 }
