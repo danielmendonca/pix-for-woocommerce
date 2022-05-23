@@ -24,7 +24,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	{
 		$this->domain = 'woocommerce-pix';
 		$this->id = 'pix_gateway';
-		$this->icon = apply_filters('woocommerce_gateway_icon', WC_PIX_PLUGIN_URL . 'assets/icon-pix.png');
+		$this->icon = apply_filters('woocommerce_gateway_icon', WC_PIX_PLUGIN_URL . 'assets/icon-pix-' . this->get_option('icon_color') . '.png');
 		$this->has_fields = false;
 		$this->method_title = __('Pix', $this->domain);
 		$this->method_description = __('Receba pagamentos via PIX', $this->domain);
@@ -170,6 +170,18 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 				'description' => __('Representa o título visível para o usuário comprador', 'woocommerce-pix'),
 				'desc_tip'    => true,
 				'default'     => __('Faça um Pix', 'woocommerce-pix'),
+			),
+			'icon_color'                => array(
+				'title'       => __('Cor do ícone do PIX', 'woocommerce-pix'),
+				'type'        => 'select',
+				'description' => __('Cor do ícone que vai aparecer ao lado do título', 'woocommerce-pix'),
+				'desc_tip'    => true,
+				'options'     => array(
+					'black' => 'Preto',
+					'white' => 'Branco',
+					'green' => 'Verde'
+				),
+				'default'     => 'green',
 			),
 			'description'          => array(
 				'title'       => __('Descrição', 'woocommerce-pix'),
