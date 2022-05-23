@@ -157,7 +157,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	public function is_available()
 	{
 		// Test if is valid for use.
-		$available = 'yes' === $this->get_option('enabled') && '' !== $this->get_key() && '' !== $this->get_prefix_transaction_id() && '' !== $this->get_city() && '' !== $this->get_merchant() && $this->using_supported_currency();
+		$available = 'yes' === $this->get_option('enabled') && '' !== $this->get_key() && '' !== $this->get_city() && '' !== $this->get_merchant() && $this->using_supported_currency();
 
 		return $available;
 	}
