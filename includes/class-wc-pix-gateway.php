@@ -214,8 +214,8 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 			'prefix_transaction_id' => array(
 				'title'       => __('Prefixo Transaction ID (obrigatório)', 'woocommerce-pix'),
 				'type'        => 'text',
-				'description' => __('Por favor, informe o prefixo da Transaction ID. Ela é importante identificar o pagamento no extrato do PIX.', 'woocommerce-pix'),
-				'default'     => 'ECOMID',
+				'description' => __('Por favor, informe o prefixo da Transaction ID. Ela é importante identificar o pagamento no extrato do PIX. Somente alfanúmerico (tabela ASCII): <code>A-Z</code>, <code>a-z</code> e <code>0-9</code>.', 'woocommerce-pix'),
+				'default'     => '',
 				'required'	  => true,
 			),
 			'merchant'                => array(
