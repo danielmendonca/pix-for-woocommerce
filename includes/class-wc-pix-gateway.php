@@ -38,9 +38,9 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$this->description = $this->get_option('description');
 		$this->instructions = $this->get_option('instructions');
 		$this->key = $this->get_option('key');
+		$this->prefix_transaction_id = $this->get_option('prefix_transaction_id');
 		$this->merchant = $this->get_option('merchant');
 		$this->city = $this->get_option('city');
-		$this->key = $this->get_option('key');
 		$this->whatsapp = $this->get_option('whatsapp');
 		$this->telegram = $this->get_option('telegram');
 		$this->email = $this->get_option('email');
@@ -118,6 +118,16 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
+	 * Get prefix_transaction_id.
+	 *
+	 * @return string
+	 */
+	public function get_prefix_transaction_id()
+	{
+		return $this->prefix_transaction_id;
+	}
+
+	/**
 	 * Get lojista.
 	 *
 	 * @return string
@@ -147,7 +157,7 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 	public function is_available()
 	{
 		// Test if is valid for use.
-		$available = 'yes' === $this->get_option('enabled') && '' !== $this->get_key() && '' !== $this->get_city() && '' !== $this->get_merchant() && $this->using_supported_currency();
+		$available = 'yes' === $this->get_option('enabled') && '' !== $this->get_key() && '' !== $this->get_prefix_transaction_id() && '' !== $this->get_city() && '' !== $this->get_merchant() && $this->using_supported_currency();
 
 		return $available;
 	}
@@ -199,6 +209,13 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 				'type'        => 'text',
 				'description' => __('Por favor, informe sua chave PIX. Ela é necessária para poder processar os pagamentos.', 'woocommerce-pix'),
 				'default'     => '',
+				'required'	  => true,
+			),
+			'prefix_transaction_id' => array(
+				'title'       => __('Prefixo Transaction ID (obrigatório)', 'woocommerce-pix'),
+				'type'        => 'text',
+				'description' => __('Por favor, informe o prefixo da Transaction ID. Ela é importante identificar o pagamento no extrato do PIX.', 'woocommerce-pix'),
+				'default'     => 'ECOMID',
 				'required'	  => true,
 			),
 			'merchant'                => array(
@@ -412,10 +429,10 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$pix->chave($this->key);
 		$pix->valor($order->get_total());
 		$pix->cidade($this->city);
-		// $pix->info('ID '.$order_id);
 		$pix->lojista($this->merchant);
 		$pix->moeda(986); // Real brasileiro (BRL) - Conforme ISO 4217: https://pt.wikipedia.org/wiki/ISO_4217
-		$pix->txId('ID' . $order_id);
+		$pix->txId(this->get_prefix_transaction_id . $order_id);
+		$pix->info(this->get_prefix_transaction_id . $order_id);
 		$link = $pix->toCode();
 		$image = $pix->toImage();
 		$pix = array(
