@@ -431,8 +431,8 @@ class WC_Pix_Gateway extends WC_Payment_Gateway
 		$pix->cidade($this->city);
 		$pix->lojista($this->merchant);
 		$pix->moeda(986); // Real brasileiro (BRL) - Conforme ISO 4217: https://pt.wikipedia.org/wiki/ISO_4217
-		$pix->txId(this->get_prefix_transaction_id . $order_id);
-		$pix->info(this->get_prefix_transaction_id . $order_id);
+		$pix->txId($this->get_prefix_transaction_id . $order_id);
+		$pix->info($this->get_prefix_transaction_id . $order_id);
 		$link = $pix->toCode();
 		$image = $pix->toImage();
 		$pix = array(
